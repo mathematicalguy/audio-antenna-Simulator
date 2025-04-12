@@ -1,0 +1,40 @@
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.waveform-container {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 20px 0;
+}
+
+canvas {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background-color: #2196F3;
+    border-color: #2196F3;
+    padding: 10px 30px;
+}
+
+.btn-primary:hover {
+    background-color: #1976D2;
+    border-color: #1976D2;
+}
