@@ -17,6 +17,26 @@ main {
     margin: 20px 0;
 }
 
+.visualization-container {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 20px 0;
+}
+
+#antennaVisualization {
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+#antennaVisualization img {
+    max-width: 100%;
+    border-radius: 4px;
+}
+
 canvas {
     width: 100%;
     height: auto;
@@ -37,4 +57,29 @@ canvas {
 .btn-primary:hover {
     background-color: #1976D2;
     border-color: #1976D2;
+}
+
+.interactive-viewer {
+    width: 100%;
+    height: 500px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.visualization-controls {
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 0 0 8px 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.visualization-controls .form-range {
+    flex: 1;
+}
+
+.visualization-controls .btn {
+    min-width: 80px;
 }
