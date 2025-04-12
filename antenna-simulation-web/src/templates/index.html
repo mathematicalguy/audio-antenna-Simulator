@@ -1,97 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %}EM Field Simulator{% endblock %}
+{% block title %}Home - Audio Analyzer{% endblock %}
 
 {% block content %}
-<div class="row g-4">
-    <!-- Left Sidebar -->
-    <div class="col-md-3">
-        <div class="sidebar">
-            <!-- Upload Card -->
-            <div class="control-card">
-                <h5 class="card-title">Upload Audio</h5>
-                <form id="uploadForm" method="POST" enctype="multipart/form-data">
+<div class="row">
+    <div class="col-md-8 offset-md-2 text-center">
+        <h1 class="display-4 mb-4">Audio Waveform Analyzer</h1>
+        <p class="lead mb-4">Upload your audio file to visualize and analyze its waveform</p>
+        
+        <div class="card">
+            <div class="card-body">
+                <form id="uploadForm" enctype="multipart/form-data" method="POST">
                     <div class="mb-3">
                         <label for="audioFile" class="form-label">Select Audio File</label>
                         <input type="file" class="form-control" id="audioFile" name="audio" accept=".mp3,.wav" required>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Upload & Analyze</button>
+                    <button type="submit" class="btn btn-primary">Upload & Analyze</button>
+                    <div id="result" class="alert mt-3" style="display: none;"></div>
                 </form>
-                <div id="result" class="alert mt-3" style="display: none;"></div>
-            </div>
-
-            <!-- Parameters Card -->
-            <div class="control-card">
-                <h5 class="card-title">Field Parameters</h5>
-                <div class="mb-3">
-                    <label for="antennaLength" class="form-label d-flex justify-content-between">
-                        Antenna Length (m)
-                        <span class="value-display" id="antennaLengthValue">1.0</span>
-                    </label>
-                    <input type="range" class="form-range" id="antennaLength" min="0.2" max="2.0" step="0.1" value="1.0">
-                </div>
-                <div class="mb-3">
-                    <label for="frequency" class="form-label d-flex justify-content-between">
-                        Field Frequency (Hz)
-                        <span class="value-display" id="frequencyValue">1.0</span>
-                    </label>
-                    <input type="range" class="form-range" id="frequency" min="0.1" max="5.0" step="0.1" value="1.0">
-                </div>
-                <div class="mb-3">
-                    <label for="fieldStrength" class="form-label d-flex justify-content-between">
-                        Field Strength
-                        <span class="value-display" id="fieldStrengthValue">1.0</span>
-                    </label>
-                    <input type="range" class="form-range" id="fieldStrength" min="0.1" max="3.0" step="0.1" value="1.0">
-                </div>
-            </div>
-
-            <!-- Instructions Card -->
-            <div class="instructions-card">
-                <h5>Quick Guide</h5>
-                <ul>
-                    <li><strong>Upload:</strong> Select an MP3 or WAV file to begin</li>
-                    <li><strong>Parameters:</strong>
-                        <ul>
-                            <li>Antenna Length affects field distribution</li>
-                            <li>Frequency changes wave oscillation speed</li>
-                            <li>Field Strength controls intensity</li>
-                        </ul>
-                    </li>
-                    <li><strong>Visualization:</strong>
-                        <ul>
-                            <li>Left-click + drag to rotate view</li>
-                            <li>Right-click + drag to zoom</li>
-                            <li>Middle-click + drag to pan</li>
-                        </ul>
-                    </li>
-                    <li><strong>Waveform:</strong> Click timeline to jump to position</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content Area -->
-    <div class="col-md-9">
-        <div class="visualization-container">
-            <!-- 3D Visualization -->
-            <div id="antennaVisualization">
-                <div id="interactive3d" class="interactive-viewer">
-                    <!-- VTK.js will render here -->
-                    <div class="playback-controls">
-                        <button id="playPauseBtn" class="btn btn-primary me-2">▶️ Play</button>
-                        <button id="resetBtn" class="btn btn-secondary">⟲ Reset</button>
+                
+                <div class="visualization-container">
+                    <div id="antennaVisualization" class="mb-4" style="display: none;">
+                        <h4 class="text-center mb-3">Antenna Simulation</h4>
+                        <div id="interactive3d" class="interactive-viewer"></div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Waveform -->
-            <div class="waveform-container">
-                <h5 class="text-center mb-3">Audio Waveform</h5>
-                <div class="position-relative">
-                    <canvas id="waveformCanvas"></canvas>
-                    <div class="time-controls">
-                        <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span>
+                    
+                    <div class="waveform-container">
+                        <h4 class="text-center mb-3">Audio Waveform</h4>
+                        <canvas id="waveformCanvas" width="800" height="200"></canvas>
                     </div>
                 </div>
             </div>
@@ -101,40 +37,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/antennaVisualization.js') }}"></script>
 <script src="{{ url_for('static', filename='js/waveform.js') }}"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize parameter display updates
-    document.querySelectorAll('.form-range').forEach(range => {
-        const valueDisplay = document.getElementById(range.id + 'Value');
-        range.addEventListener('input', () => {
-            valueDisplay.textContent = range.value;
-            if (window.emFieldVisualizer) {
-                window.emFieldVisualizer.setParameters({
-                    [range.id]: parseFloat(range.value)
-                });
-            }
-        });
-    });
-
-    // Handle playback controls
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const resetBtn = document.getElementById('resetBtn');
-
-    playPauseBtn.addEventListener('click', () => {
-        const isPlaying = playPauseBtn.textContent.includes('Pause');
-        playPauseBtn.textContent = isPlaying ? '▶️ Play' : '⏸️ Pause';
-        if (window.waveformVisualizer) {
-            window.waveformVisualizer.togglePlayback(!isPlaying);
-        }
-    });
-
-    resetBtn.addEventListener('click', () => {
-        if (window.waveformVisualizer) {
-            window.waveformVisualizer.setTime(0);
-        }
-    });
-});
-</script>
 {% endblock %}
